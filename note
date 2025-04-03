@@ -1,0 +1,6 @@
+how to install Laravel Breez-
+
+composer require laravel/breeze --dev
+php artisan breeze:install blade
+npm run dev
+migraction
