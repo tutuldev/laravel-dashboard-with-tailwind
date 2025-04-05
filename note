@@ -4,3 +4,9 @@ composer require laravel/breeze --dev
 php artisan breeze:install blade
 npm run dev
 migraction
+
+
+install react
+
+npm install react react-dom @vitejs/plugin-react
+npm install react-router-dom
