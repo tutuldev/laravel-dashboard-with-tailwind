@@ -15,7 +15,12 @@
                 <h2 class="text-xl font-semibold">{{ $post->title }}</h2>
                 {{-- <p class="text-gray-600">{{ Str::limit($post->description, 100) }}</p> --}}
                 {{-- <p class="text-gray-600">{{ Str::limit(strip_tags($post->description), 100) }}</p> --}}
-                <p class="text-gray-600">{!! html_entity_decode(Str::limit($post->description, 100)) !!}</p>
+                {{-- <p class="text-gray-600">{!! html_entity_decode(Str::limit($post->description, 100)) !!}</p> --}}
+                {{-- after using Purify  --}}
+                {{-- <p class="text-gray-600">{!! Purify::clean($post->description) !!}</p> --}}
+                {{-- <p class="text-gray-600">{!! $post->description !!}</p> --}}
+                {{-- <p class="text-gray-600">{{ $post->description }}</p> // blade slitizer --}}
+                <p class="text-gray-600">{!! $post->description !!}</p>
 
                 <div class="mt-3 flex justify-between">
                     <a href="{{ route('posts.show', $post) }}" class="text-blue-600 hover:underline">View</a>

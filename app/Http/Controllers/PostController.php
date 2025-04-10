@@ -2,13 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use HTMLPurifier;
+use HTMLPurifier_Config;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-
 class PostController extends Controller
 {
+    protected function purifierInstance()
+    {
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('HTML.Allowed', 'p,b,strong,i,em,u,ul,ol,li,a[href|target],img[src|alt|width|height],table,tr,td,th,thead,tbody,tfoot,br,span[style]');
+        $config->set('AutoFormat.RemoveEmpty', true);
+        $config->set('HTML.SafeIframe', true);
+        $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www.youtube.com/embed/|player.vimeo.com/video/)%');
+        $config->set('Attr.EnableID', true);
+        $config->set('Attr.AllowedFrameTargets', ['_blank']);
+        $config->set('CSS.AllowTricky', false);
+        $config->set('Attr.AllowedClasses', []);
+
+        return new HTMLPurifier($config);
+    }
+
     public function index()
     {
         $posts = Post::latest()->get();
@@ -24,15 +40,20 @@ class PostController extends Controller
     {
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Apply Purifier
+        $purifier = $this->purifierInstance();
+        $data['description'] = $purifier->purify($data['description']);
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
         Post::create($data);
+
         return redirect()->route('posts.index')->with('success', 'Post created successfully!');
     }
 
@@ -50,12 +71,15 @@ class PostController extends Controller
     {
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Apply Purifier
+        $purifier = $this->purifierInstance();
+        $data['description'] = $purifier->purify($data['description']);
+
         if ($request->hasFile('image')) {
-            // Delete old image
             if ($post->image) {
                 Storage::disk('public')->delete($post->image);
             }
@@ -63,6 +87,7 @@ class PostController extends Controller
         }
 
         $post->update($data);
+
         return redirect()->route('posts.index')->with('success', 'Post updated successfully!');
     }
 
@@ -73,6 +98,7 @@ class PostController extends Controller
         }
 
         $post->delete();
+
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully!');
     }
 }
