@@ -13,7 +13,7 @@ class PostController extends Controller
     protected function purifierInstance()
     {
         $config = HTMLPurifier_Config::createDefault();
-        $config->set('HTML.Allowed', 'p,b,strong,i,em,u,ul,ol,li,a[href|target],img[src|alt|width|height],table,tr,td,th,thead,tbody,tfoot,br,span[style]');
+        $config->set('HTML.Allowed', 'p,b,strong,i,em,u,ul,ol,li,a[href|target],img[src|alt|width|height],table,tr,td,th,thead,tbody,tfoot,br,span[style],pre,code');
         $config->set('AutoFormat.RemoveEmpty', true);
         $config->set('HTML.SafeIframe', true);
         $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www.youtube.com/embed/|player.vimeo.com/video/)%');
@@ -41,12 +41,15 @@ class PostController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required',
+            'code' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Apply Purifier
         $purifier = $this->purifierInstance();
         $data['description'] = $purifier->purify($data['description']);
+        $data['code'] = htmlentities($request->code);
+
+        // $data['code'] = $purifier->purify($data['code']); // Optional purification for code
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('posts', 'public');
@@ -72,12 +75,15 @@ class PostController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required',
+            'code' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Apply Purifier
         $purifier = $this->purifierInstance();
         $data['description'] = $purifier->purify($data['description']);
+        $data['code'] = htmlentities($request->code);
+
+        // $data['code'] = $purifier->purify($data['code']); // Optional
 
         if ($request->hasFile('image')) {
             if ($post->image) {

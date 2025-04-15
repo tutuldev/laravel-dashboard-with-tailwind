@@ -5,6 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard with Fixed Top Navbar</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
@@ -27,7 +29,17 @@
       </main>
     </div>
   </div>
+
+  {{-- highliter js  --}}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
   @stack('scripts')
+  {{-- highliter js  --}}
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        hljs.highlightAll(); // Initialize syntax highlighting
+    });
+</script>
   <!-- Scripts -->
   <script>
     const btn = document.getElementById('menu-btn');

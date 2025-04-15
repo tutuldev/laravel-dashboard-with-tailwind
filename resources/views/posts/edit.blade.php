@@ -7,18 +7,28 @@
         @csrf
         @method('PUT')
 
+        {{-- Title --}}
         <div>
             <label class="block font-semibold">Title</label>
             <input type="text" name="title" value="{{ old('title', $post->title) }}" class="w-full p-2 border rounded" required>
             @error('title') <p class="text-red-500 text-sm">{{ $message }}</p> @enderror
         </div>
 
+        {{-- Description --}}
         <div>
             <label class="block font-semibold">Description</label>
             <textarea name="description" id="description" class="w-full p-2 border rounded" required>{{ old('description', $post->description) }}</textarea>
             @error('description') <p class="text-red-500 text-sm">{{ $message }}</p> @enderror
         </div>
 
+        {{-- Code --}}
+        <div>
+            <label class="block font-semibold">Code</label>
+            <textarea name="code" class="w-full p-2 border font-mono rounded" rows="8" required>{{ old('code', $post->code) }}</textarea>
+            @error('code') <p class="text-red-500 text-sm">{{ $message }}</p> @enderror
+        </div>
+
+        {{-- Image --}}
         <div>
             <label class="block font-semibold">Image (optional)</label>
             @if($post->image)
@@ -28,6 +38,7 @@
             @error('image') <p class="text-red-500 text-sm">{{ $message }}</p> @enderror
         </div>
 
+        {{-- Submit Button --}}
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
         <a href="{{ route('posts.index') }}" class="ml-4 text-gray-600 hover:underline">Cancel</a>
     </form>
